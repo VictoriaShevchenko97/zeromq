@@ -1,21 +1,20 @@
-core = require('./lib/core');
-, zmq = require('zeromq'),
+zmq = require('zeromq'),
 pub=zmq.socket('pub'),
 md5=require('md5'),
 fs = require("fs");
 
-var User=require('./lib/checkUser');
-var obj = JSON.parse(fs.readFileSync('config.json', 'utf8'));
+let User=require('./lib/checkUser');
+let obj = JSON.parse(fs.readFileSync('config.json', 'utf8'));
 
-var str=`tcp://${obj.broker_host}:3000`;
+let str=`tcp://${obj.broker_host}:3000`;
 
-var socket=pub.bindSync(str);
+let socket=pub.bindSync(str);
 
 console.log('Publisher bound to '+str);
 
 require('./lib/userConfig')(result=>{
   result=JSON.parse(result);
-  var config={"type":result.type,"email":result.email,"pwd":md5(result.pwd),"msg_id":1};
+  let config={"type":result.type,"email":result.email,"pwd":md5(result.pwd),"msg_id":1};
 
     User.findUser(JSON.stringify(obj),config.email,config.pwd,(res)=>{
       if(res!='WRONG_PWD'){

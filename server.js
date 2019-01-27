@@ -1,10 +1,10 @@
 cluster = require('cluster')
 , zmq = require('zeromq'),
 sub=zmq.socket('sub');
-var fs=require('fs');
-var argv = require('minimist')(process.argv.slice(2));
+let fs=require('fs');
+let argv = require('minimist')(process.argv.slice(2));
 
-var str={
+let str={
   "broker_host":argv.broker_host||'localhost',
   "db_host":argv.db_host||'localhost',
   "db_port" : argv.db_port||'5432',
@@ -14,18 +14,18 @@ var str={
 };
 
 writeConfig(str);
-var str=`tcp://${str.broker_host}:3000`;
+let strConf=`tcp://${str.broker_host}:3000`;
 
-var socket=sub.connect(str);
+let socket=sub.connect(strConf);
 socket.subscribe('app_in');
-console.log('Subscriber connected to '+str);
+console.log('Subscriber connected to '+strConf);
 
 socket.on(`message`, (topic,msg)=>{
   console.log(`Client send ${msg}`);
 });
 
 function writeConfig(str) {
-  var writeStream = fs.createWriteStream("config.json"); // создаем поток
+  let writeStream = fs.createWriteStream("config.json"); // создаем поток
   writeStream.write(JSON.stringify(str)); // пишем
   writeStream.end();
 }
